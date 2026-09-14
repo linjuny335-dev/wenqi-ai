@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.deps-backup/
+backups/
+*.tsbuildinfo
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+.vite/
