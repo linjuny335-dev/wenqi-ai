@@ -73,14 +73,6 @@ const titleParts = computed(() => {
   return { before: title.slice(0, index), accent, after: title.slice(index + accent.length) }
 })
 const sceneDirectionClass = computed(() => `scene-enter-${activeScene.value.enterDirection}`)
-const blueyardProgress = computed(() => `${String(Math.round((activeSceneIndex.value / Math.max(1, homeScenes.length - 1)) * 100)).padStart(3, '0')}%`)
-
-const blueyardFeatures = [
-  { index: '01', title: 'Pattern Recognition', label: '纹样识别', desc: '上传图片，读取纹样名称、年代、元素和文化寓意。', scene: 'recognition' as SceneId },
-  { index: '02', title: 'Culture Map', label: '文化解析', desc: '把识别结果拆成结构、色彩、来源和设计元素。', scene: 'culture' as SceneId },
-  { index: '03', title: 'Generative Studio', label: 'AI二创', desc: '用参数化工作台生成现代纹样和应用方案。', scene: 'creation' as SceneId },
-  { index: '04', title: 'Living Archive', label: '作品展示', desc: '保存二创结果，以横向画廊查看和继续编辑。', scene: 'gallery' as SceneId }
-]
 
 function clearStepTimer() {
   if (stepTimer !== null) {
@@ -399,7 +391,7 @@ onBeforeUnmount(() => {
 <template>
   <section
     ref="heroRef"
-    class="hero-stage advanced-hero scene-stage immersive-stage blueyard-stage"
+    class="hero-stage advanced-hero scene-stage immersive-stage phoenix-world-stage"
     :class="[`hero-state-${status}`, `scene-${activeSceneId}`, { 'is-scene-transitioning': isSceneTransitioning, 'is-dragging-scene': isDraggingScene }]"
     @pointerdown="handleScenePointerDown"
     @pointermove="handlePointerMove"
@@ -408,11 +400,6 @@ onBeforeUnmount(() => {
     @pointerleave="resetPointer"
     @wheel="handleWheel"
   >
-    <div class="blueyard-topline">
-      <span>{{ blueyardProgress }}</span>
-      <strong>纹启AI / Pattern intelligence system</strong>
-      <button type="button" @click="goToSceneId('home')">Back to home page</button>
-    </div>
     <div class="hero-depth hero-depth-back" />
     <div class="hero-depth hero-depth-pattern" />
     <ParticleBackground
@@ -422,54 +409,34 @@ onBeforeUnmount(() => {
       :transitioning="isSceneTransitioning"
       :drag-progress="dragProgress"
     />
-    <PhoenixVisual v-if="activeSceneId === 'home'" :state="phoenixState" />
+    <PhoenixVisual :state="phoenixState" />
 
     <Transition name="scene-copy" mode="out-in">
       <div :key="activeSceneId" class="immersive-scene-content" :class="[sceneDirectionClass, `content-${activeSceneId}`]">
         <template v-if="activeSceneId === 'home'">
           <input ref="homeFileInput" class="sr-only" type="file" accept="image/png,image/jpeg,image/webp" @change="onHomeUploadChange" />
-          <section class="blueyard-home" aria-label="纹启AI 首页">
-            <div class="blueyard-kicker">
-              <span>WENQI AI</span>
-              <span>TRADITIONAL PATTERN INTERFACE</span>
-            </div>
-            <div class="blueyard-hero-grid">
-              <div class="blueyard-copy">
-                <p class="blueyard-section-number">001 / Manifesto</p>
-                <h1 class="font-display">纹样不是素材库，而是一套仍在生长的视觉系统。</h1>
-              </div>
-              <aside class="blueyard-statement">
-                <p>纹启AI 将传统纹样识别、文化解析和二次创作压缩进一个可操作的前端界面：上传、分析、拆解、生成，并把结果保存到作品档案。</p>
-                <div class="blueyard-actions">
-                  <button class="hero-upload-btn shine-btn" type="button" @click="goToSceneId('recognition')">开始探索</button>
-                  <button class="hero-outline-btn" type="button" @click="openHomeUpload">
-                    <el-icon><UploadFilled /></el-icon>
-                    上传纹样
-                  </button>
-                </div>
-              </aside>
-            </div>
-
-            <div class="blueyard-index-grid">
-              <button
-                v-for="item in blueyardFeatures"
-                :key="item.index"
-                class="blueyard-card"
-                type="button"
-                @click="goToSceneId(item.scene)"
-              >
-                <span>{{ item.index }}</span>
-                <strong>{{ item.title }}</strong>
-                <em>{{ item.label }}</em>
-                <p>{{ item.desc }}</p>
+          <div class="home-cinematic-motto">
+            <span>纹以载道</span>
+            <span>启于未来</span>
+            <i />
+          </div>
+          <div class="home-landing-copy cinematic-copy">
+            <h1 class="font-display">纹启AI</h1>
+            <h2>传统纹样识别与二次创作平台</h2>
+            <i class="title-rule" />
+            <p>让沉睡的传统纹样，在数字世界中重新生长</p>
+            <div class="cinematic-actions">
+              <button class="hero-upload-btn shine-btn cinematic-primary" type="button" @click="goToSceneId('recognition')">
+                <span>开始探索</span>
+                <b>›</b>
+              </button>
+              <button class="hero-outline-btn cinematic-secondary" type="button" @click="openHomeUpload">
+                <el-icon><UploadFilled /></el-icon>
+                <span>上传纹样</span>
               </button>
             </div>
-
-            <footer class="blueyard-home-footer">
-              <span>Built as a desktop-first front-end prototype.</span>
-              <span>Archive / Recognition / Culture / Creation / Gallery</span>
-            </footer>
-          </section>
+          </div>
+          <div class="home-footer-whisper">寻纹见古 · 以 AI 焕新</div>
         </template>
 
         <template v-else-if="activeSceneId === 'recognition'">
